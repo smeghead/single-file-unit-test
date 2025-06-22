@@ -85,7 +85,7 @@ class TestCase
 if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['argv'][0])) {
     function loadTestFiles($path) {
         if (is_dir($path)) {
-            $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+            $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
             foreach ($rii as $file) {
                 if ($file->isFile() && preg_match('/Test\.php$/', $file->getFilename())) {
                     require $file->getPathname();
