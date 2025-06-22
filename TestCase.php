@@ -41,11 +41,11 @@ class TestCase
 
                 $this->out("✔ $class::$method", 'green');
             } catch (\Exception $e) {
-                self::$failCount++;
                 if ($this->expectedExceptionMessage !== null &&
                     strpos($e->getMessage(), $this->expectedExceptionMessage) !== false) {
                     $this->out("✔ $class::$method (expected exception caught)", 'green');
                 } else {
+                    self::$failCount++;
                     $this->out("✘ $class::$method", 'red');
                     $this->out("   " . $e->getMessage(), 'yellow');
                 }
