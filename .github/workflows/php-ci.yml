@@ -23,4 +23,4 @@ jobs:
 
       - name: Run tests
         run: |
-          php run.php
+          php TestCase.php tests
