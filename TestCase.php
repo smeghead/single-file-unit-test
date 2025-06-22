@@ -4,6 +4,7 @@ namespace Smeghead\SingleFileUnitTest;
 class TestCase
 {
     private $expectedExceptionMessage = null;
+    private static $failCount = 0;
 
     public function expectExceptionMessage($message)
     {
@@ -40,6 +41,7 @@ class TestCase
 
                 $this->out("✔ $class::$method", 'green');
             } catch (\Exception $e) {
+                self::$failCount++;
                 if ($this->expectedExceptionMessage !== null &&
                     strpos($e->getMessage(), $this->expectedExceptionMessage) !== false) {
                     $this->out("✔ $class::$method (expected exception caught)", 'green');
@@ -74,5 +76,38 @@ class TestCase
                 $instance->runTests();
             }
         }
+
+        exit(self::$failCount > 0 ? 1 : 0);
     }
+}
+
+// ---- CLI entry point ----
+if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['argv'][0])) {
+    function loadTestFiles($path) {
+        if (is_dir($path)) {
+            $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+            foreach ($rii as $file) {
+                if ($file->isFile() && preg_match('/Test\.php$/', $file->getFilename())) {
+                    require $file->getPathname();
+                }
+            }
+        } elseif (is_file($path)) {
+            require $path;
+        } else {
+            fwrite(STDERR, "Invalid path: $path\n");
+            exit(2);
+        }
+    }
+
+    $args = array_slice($_SERVER['argv'], 1);
+    if (empty($args)) {
+        fwrite(STDERR, "Usage: php TestCase.php <test_dir_or_file> [...more]\n");
+        exit(2);
+    }
+
+    foreach ($args as $arg) {
+        loadTestFiles($arg);
+    }
+
+    \Smeghead\SingleFileUnitTest\TestCase::runAll();
 }
