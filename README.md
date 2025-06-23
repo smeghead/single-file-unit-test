@@ -1,7 +1,7 @@
 # single-file-unit-test
 
 PHP 5.6 以上で動作する、依存ゼロの**シングルファイル・ユニットテストフレームワーク**です。  
-`require 'TestCase.php'` するだけで使い始められ、PHPUnitへの移行も視野に入れた設計です。
+`require 'single-file-unit-test.php'` するだけで使い始められ、PHPUnitへの移行も視野に入れた設計です。
 
 ---
 
@@ -19,10 +19,10 @@ PHP 5.6 以上で動作する、依存ゼロの**シングルファイル・ユ�
 
 ## ✅ 特徴
 
-- ✅ `require 'TestCase.php'` だけで動作
+- ✅ `require 'single-file-unit-test.php'` だけで動作
 - ✅ `assertSame` と `expectExceptionMessage` に対応
 - ✅ PHPUnit 互換の `TestCase` を継承した記述が可能（後からPHPUnitへ移行しやすい）
-- ✅ `php TestCase.php tests/` で CLI 実行可能
+- ✅ `php single-file-unit-test.php tests/` で CLI 実行可能
 - ✅ 終了コードによる成功・失敗判定（CIに対応）
 - ✅ PHP 5.6 ～ 8.4 対応（GitHub Actions 対応済み）
 
@@ -35,7 +35,7 @@ PHP 5.6 以上で動作する、依存ゼロの**シングルファイル・ユ�
 ```php
 <?php
 
-require 'TestCase.php';
+require 'single-file-unit-test.php';
 
 use Smeghead\SingleFileUnitTest\TestCase;
 
@@ -51,7 +51,7 @@ class MyTest extends TestCase {
 ### B. CLI テストランナーとして使う
 
 ```bash
-php TestCase.php tests/
+php single-file-unit-test.php tests/
 ```
 
 - `tests/` ディレクトリを再帰的に探索し `*Test.php` ファイルを読み込みます

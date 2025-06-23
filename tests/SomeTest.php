@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/../single-file-unit-test.php';
 
 use Smeghead\SingleFileUnitTest\TestCase;
 

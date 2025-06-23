@@ -101,7 +101,7 @@ if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['argv'
 
     $args = array_slice($_SERVER['argv'], 1);
     if (empty($args)) {
-        fwrite(STDERR, "Usage: php TestCase.php <test_dir_or_file> [...more]\n");
+        fwrite(STDERR, "Usage: php single-file-unit-test.php <test_dir_or_file> [...more]\n");
         exit(2);
     }
 
