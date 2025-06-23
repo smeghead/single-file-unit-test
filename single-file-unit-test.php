@@ -61,11 +61,54 @@ class TestCase
             'yellow' => '1;33',
         );
 
-        if (PHP_SAPI === 'cli' && isset($colors[$color])) {
+        if (PHP_SAPI === 'cli' && isset($colors[$color]) && $this->supportsColor()) {
             echo "\033[" . $colors[$color] . "m" . $text . "\033[0m\n";
         } else {
             echo $text . "\n";
         }
+    }
+
+    private function supportsColor()
+    {
+        // NO_COLOR環境変数が設定されている場合は色を無効にする
+        if (getenv('NO_COLOR') !== false) {
+            return false;
+        }
+
+        // TTYでない場合（リダイレクトやパイプされている場合）は色を無効にする
+        if (function_exists('posix_isatty') && !posix_isatty(STDOUT)) {
+            return false;
+        }
+
+        // TERM環境変数をチェック
+        $term = getenv('TERM');
+        if ($term === false || $term === 'dumb') {
+            return false;
+        }
+
+        // 色をサポートすることが知られているTERM値
+        $colorTerms = array(
+            'xterm', 'xterm-color', 'xterm-256color',
+            'screen', 'screen-256color',
+            'tmux', 'tmux-256color',
+            'rxvt', 'rxvt-unicode', 'rxvt-256color',
+            'linux', 'cygwin',
+            'ansi', 'vt100', 'vt220'
+        );
+
+        foreach ($colorTerms as $colorTerm) {
+            if (strpos($term, $colorTerm) === 0) {
+                return true;
+            }
+        }
+
+        // COLORTERM環境変数が設定されている場合
+        if (getenv('COLORTERM') !== false) {
+            return true;
+        }
+
+        // デフォルトでは色をサポートしないと仮定
+        return false;
     }
 
     public static function runAll()
