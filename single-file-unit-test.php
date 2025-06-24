@@ -89,15 +89,117 @@ final class ColorSupport
     }
 }
 
+final class TerminalString
+{
+    private $colorSupport;
+    private static $fgColors = [
+        'black' => '30',
+        'red' => '31',
+        'green' => '32',
+        'yellow' => '33',
+        'blue' => '34',
+        'magenta' => '35',
+        'cyan' => '36',
+        'white' => '97',
+    ];
+    private static $bgColors = [
+        'black' => '40',
+        'red' => '41',
+        'green' => '42',
+        'yellow' => '43',
+        'blue' => '44',
+        'magenta' => '45',
+        'cyan' => '46',
+        'white' => '107',
+    ];
+
+    public function __construct(ColorSupport $colorSupport)
+    {
+        $this->colorSupport = $colorSupport;
+    }
+
+    public function text($text, $fg = null, $bg = null)
+    {
+        if (PHP_SAPI === 'cli' && $this->colorSupport->isSupported() && ($fg || $bg)) {
+            $codes = [];
+            if ($fg && isset(self::$fgColors[$fg])) {
+                $codes[] = self::$fgColors[$fg];
+            }
+            if ($bg && isset(self::$bgColors[$bg])) {
+                $codes[] = self::$bgColors[$bg];
+            }
+            if ($codes) {
+                return "\033[" . implode(';', $codes) . "m" . $text . "\033[0m";
+            }
+        }
+        return $text;
+    }
+}
+
+final class ResultAccumulator
+{
+    private $testCount = 0;
+    private $failCount = 0;
+    private $assertionCount = 0;
+    private $failedTests = [];
+
+    public function incrementTestCount()
+    {
+        $this->testCount++;
+    }
+
+    public function incrementFailCount()
+    {
+        $this->failCount++;
+    }
+
+    public function incrementAssertionCount()
+    {
+        $this->assertionCount++;
+    }
+
+    public function addFailedTest($testName)
+    {
+        $this->failedTests[] = $testName;
+    }
+
+    public function getTestCount()
+    {
+        return $this->testCount;
+    }
+
+    public function getFailCount()
+    {
+        return $this->failCount;
+    }
+
+    public function getAssertionCount()
+    {
+        return $this->assertionCount;
+    }
+
+    public function getFailedTests()
+    {
+        return $this->failedTests;
+    }
+
+    public function hasFailures()
+    {
+        return $this->failCount > 0;
+    }
+}
+
 class TestCase
 {
     private $expectedExceptionMessage = null;
-    private static $failCount = 0;
+    private static $resultAccumulator = null;
     private $colorSupport;
+    private $terminalString;
 
     public function __construct()
     {
         $this->colorSupport = new ColorSupport();
+        $this->terminalString = new TerminalString($this->colorSupport);
     }
 
     public function expectExceptionMessage($message)
@@ -107,6 +209,7 @@ class TestCase
 
     public function assertSame($expected, $actual, $message = '')
     {
+        self::$resultAccumulator->incrementAssertionCount();
         if ($expected !== $actual) {
             throw new \Exception(
                 $message . "\nExpected: " . var_export($expected, true) .
@@ -122,6 +225,7 @@ class TestCase
         foreach ($methods as $method) {
             if (strpos($method, 'test') !== 0) continue;
 
+            self::$resultAccumulator->incrementTestCount();
             $this->expectedExceptionMessage = null;
 
             try {
@@ -139,7 +243,8 @@ class TestCase
                     strpos($e->getMessage(), $this->expectedExceptionMessage) !== false) {
                     $this->out("✔ $class::$method (expected exception caught)", 'green');
                 } else {
-                    self::$failCount++;
+                    self::$resultAccumulator->incrementFailCount();
+                    self::$resultAccumulator->addFailedTest("$class::$method");
                     $this->out("✘ $class::$method", 'red');
                     $this->out("   " . $e->getMessage(), 'yellow');
                 }
@@ -149,21 +254,13 @@ class TestCase
 
     private function out($text, $color = null)
     {
-        $colors = array(
-            'red' => '0;31',
-            'green' => '0;32',
-            'yellow' => '1;33',
-        );
-
-        if (PHP_SAPI === 'cli' && isset($colors[$color]) && $this->colorSupport->isSupported()) {
-            echo "\033[" . $colors[$color] . "m" . $text . "\033[0m\n";
-        } else {
-            echo $text . "\n";
-        }
+        echo $this->terminalString->text($text, $color) . "\n";
     }
 
     public static function runAll()
     {
+        self::$resultAccumulator = new ResultAccumulator();
+        
         foreach (get_declared_classes() as $class) {
             if (is_subclass_of($class, __CLASS__)) {
                 $instance = new $class();
@@ -171,7 +268,24 @@ class TestCase
             }
         }
 
-        exit(self::$failCount > 0 ? 1 : 0);
+        // Summary output
+        $colorSupport = new ColorSupport();
+        $terminalString = new TerminalString($colorSupport);
+        echo "\n"; // 空行を追加
+        if (!self::$resultAccumulator->hasFailures()) {
+            echo $terminalString->text(
+                "OK (" . self::$resultAccumulator->getTestCount() . " tests, " . self::$resultAccumulator->getAssertionCount() . " assertions)",
+                'black', 'green'
+            ) . "\n";
+        } else {
+            echo $terminalString->text("FAILURES!", 'white', 'red') . "\n";
+            echo "Tests: " . self::$resultAccumulator->getTestCount() . " Assertions: " . self::$resultAccumulator->getAssertionCount() . " Failures: " . self::$resultAccumulator->getFailCount() . ".\n";
+            foreach (self::$resultAccumulator->getFailedTests() as $failTest) {
+                echo "  - $failTest\n";
+            }
+        }
+
+        exit(self::$resultAccumulator->hasFailures() ? 1 : 0);
     }
 }
 
