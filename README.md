@@ -83,6 +83,8 @@ class SomeTest extends TestCase {
 }
 ```
 
+![example](docs/example.jpg)
+
 ---
 
 ## 📄 ライセンス
