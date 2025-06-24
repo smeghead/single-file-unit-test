@@ -1,5 +1,7 @@
 # ChangeLog
 
+## v0.0.2 (2025-06-25)
+
  * fix to run as library error.
 
 ## v0.0.1 (2025-06-24)

@@ -1,7 +1,7 @@
 <?php
 namespace Smeghead\SingleFileUnitTest;
 
-const VERSION = 'v0.0.1';
+const VERSION = 'v0.0.2';
 
 class ColorSupport
 {
