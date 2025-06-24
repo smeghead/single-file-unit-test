@@ -23,6 +23,7 @@ PHP 5.6 以上で動作する、依存ゼロの**シングルファイル・ユ�
 - ✅ `assertSame` と `expectExceptionMessage` に対応
 - ✅ PHPUnit 互換の `TestCase` を継承した記述が可能（後からPHPUnitへ移行しやすい）
 - ✅ `php single-file-unit-test.php tests/` で CLI 実行可能
+- ✅ `--help` と `--version` オプションでヘルプとバージョン表示
 - ✅ 終了コードによる成功・失敗判定（CIに対応）
 - ✅ PHP 5.6 ～ 8.4 対応（GitHub Actions 対応済み）
 
@@ -51,9 +52,21 @@ class MyTest extends TestCase {
 ### B. CLI テストランナーとして使う
 
 ```bash
+# テスト実行
 php single-file-unit-test.php tests/
+
+# ヘルプ表示
+php single-file-unit-test.php --help
+
+# バージョン表示
+php single-file-unit-test.php --version
 ```
 
+**オプション:**
+- `-h, --help`: ヘルプメッセージを表示
+- `-v, --version`: バージョン情報を表示
+
+**動作:**
 - `tests/` ディレクトリを再帰的に探索し `*Test.php` ファイルを読み込みます
 - テストが1つでも失敗すれば `exit(1)` で終了します（CI対応）
 

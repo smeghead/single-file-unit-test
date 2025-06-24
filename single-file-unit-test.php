@@ -1,6 +1,8 @@
 <?php
 namespace Smeghead\SingleFileUnitTest;
 
+const VERSION = 'v0.0.0';
+
 final class ColorSupport
 {
     /**
@@ -175,6 +177,23 @@ class TestCase
 
 // ---- CLI entry point ----
 if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['argv'][0])) {
+    function showHelpTo($output) {
+        $helpText = "Single File Unit Test " . \Smeghead\SingleFileUnitTest\VERSION . "\n" .
+                    "\n" .
+                    "Usage:\n" .
+                    "  php single-file-unit-test.php <test_dir_or_file> [...more]\n" .
+                    "  php single-file-unit-test.php -h|--help\n" .
+                    "  php single-file-unit-test.php -v|--version\n" .
+                    "\n" .
+                    "Options:\n" .
+                    "  -h, --help     Show this help message\n" .
+                    "  -v, --version  Show version information\n" .
+                    "\n" .
+                    "Arguments:\n" .
+                    "  test_dir_or_file  Path to test directory or test file\n";
+        fwrite($output, $helpText);
+    }
+
     function loadTestFiles($path) {
         if (is_dir($path)) {
             $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
@@ -192,8 +211,21 @@ if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['argv'
     }
 
     $args = array_slice($_SERVER['argv'], 1);
+    
+    // ヘルプ表示の処理
+    if (!empty($args) && (in_array('-h', $args) || in_array('--help', $args))) {
+        showHelpTo(STDOUT);
+        exit(0);
+    }
+    
+    // バージョン表示の処理
+    if (!empty($args) && (in_array('-v', $args) || in_array('--version', $args))) {
+        echo "Single File Unit Test " . \Smeghead\SingleFileUnitTest\VERSION . "\n";
+        exit(0);
+    }
+    
     if (empty($args)) {
-        fwrite(STDERR, "Usage: php single-file-unit-test.php <test_dir_or_file> [...more]\n");
+        showHelpTo(STDERR);
         exit(2);
     }
 
