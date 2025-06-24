@@ -202,6 +202,33 @@ class TestCase
         $this->terminalString = new TerminalString($this->colorSupport);
     }
 
+    private static function ensureResultAccumulator()
+    {
+        if (self::$resultAccumulator === null) {
+            self::$resultAccumulator = new ResultAccumulator();
+        }
+    }
+
+    public static function showResults()
+    {
+        self::ensureResultAccumulator();
+        $colorSupport = new ColorSupport();
+        $terminalString = new TerminalString($colorSupport);
+        echo "\n"; // 空行を追加
+        if (!self::$resultAccumulator->hasFailures()) {
+            echo $terminalString->text(
+                "OK (" . self::$resultAccumulator->getTestCount() . " tests, " . self::$resultAccumulator->getAssertionCount() . " assertions)",
+                'black', 'green'
+            ) . "\n";
+        } else {
+            echo $terminalString->text("FAILURES!", 'white', 'red') . "\n";
+            echo "Tests: " . self::$resultAccumulator->getTestCount() . " Assertions: " . self::$resultAccumulator->getAssertionCount() . " Failures: " . self::$resultAccumulator->getFailCount() . ".\n";
+            foreach (self::$resultAccumulator->getFailedTests() as $failTest) {
+                echo "  - $failTest\n";
+            }
+        }
+    }
+
     public function expectExceptionMessage($message)
     {
         $this->expectedExceptionMessage = $message;
@@ -209,6 +236,7 @@ class TestCase
 
     public function assertSame($expected, $actual, $message = '')
     {
+        self::ensureResultAccumulator();
         self::$resultAccumulator->incrementAssertionCount();
         if ($expected !== $actual) {
             throw new \Exception(
@@ -220,6 +248,7 @@ class TestCase
 
     public function runTests()
     {
+        self::ensureResultAccumulator();
         $class = get_class($this);
         $methods = get_class_methods($this);
         foreach ($methods as $method) {
@@ -269,21 +298,7 @@ class TestCase
         }
 
         // Summary output
-        $colorSupport = new ColorSupport();
-        $terminalString = new TerminalString($colorSupport);
-        echo "\n"; // 空行を追加
-        if (!self::$resultAccumulator->hasFailures()) {
-            echo $terminalString->text(
-                "OK (" . self::$resultAccumulator->getTestCount() . " tests, " . self::$resultAccumulator->getAssertionCount() . " assertions)",
-                'black', 'green'
-            ) . "\n";
-        } else {
-            echo $terminalString->text("FAILURES!", 'white', 'red') . "\n";
-            echo "Tests: " . self::$resultAccumulator->getTestCount() . " Assertions: " . self::$resultAccumulator->getAssertionCount() . " Failures: " . self::$resultAccumulator->getFailCount() . ".\n";
-            foreach (self::$resultAccumulator->getFailedTests() as $failTest) {
-                echo "  - $failTest\n";
-            }
-        }
+        self::showResults();
 
         exit(self::$resultAccumulator->hasFailures() ? 1 : 0);
     }

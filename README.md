@@ -46,7 +46,11 @@ class MyTest extends TestCase {
     }
 }
 
+// 単一のテストクラスを実行
 (new MyTest())->runTests();
+
+// 結果を表示（オプション）
+TestCase::showResults();
 ```
 
 ### B. CLI テストランナーとして使う
