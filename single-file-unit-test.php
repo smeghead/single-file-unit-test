@@ -3,7 +3,7 @@ namespace Smeghead\SingleFileUnitTest;
 
 const VERSION = 'v0.0.0';
 
-final class ColorSupport
+class ColorSupport
 {
     /**
      * ターミナルが色をサポートしているかどうかを判定する
