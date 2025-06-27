@@ -1,37 +1,37 @@
 # single-file-unit-test
 
-PHP 5.6 以上で動作する、依存ゼロの**シングルファイル・ユニットテストフレームワーク**です。  
-`require 'single-file-unit-test.php'` するだけで使い始められ、PHPUnitへの移行も視野に入れた設計です。
+A **zero-dependency, single-file unit testing framework** for PHP 5.6 and above.  
+Just `require 'single-file-unit-test.php'` and you're ready to start testing, with a design that facilitates migration to PHPUnit.
 
 ---
 
-## 🔥 なぜこれを作ったのか？
+## Why was this created?
 
-これは、**地獄のような炎上PHPプロジェクト**をサポートした経験から生まれました。
+This framework was born from the experience of supporting **legacy PHP projects in crisis**.
 
-- `composer` すら導入されていない
-- フレームワークなし、あるいは独自のレガシー実装
-- テストコードゼロ、まず書くための環境整備が難しい
+- No `composer` setup
+- No framework, or custom legacy implementations
+- Zero test code, making it difficult to set up a testing environment
 
-このような状況で、「**とにかく最初のテストを1本書きたい**」という現場ニーズに応えるために作られました。
-
----
-
-## ✅ 特徴
-
-- ✅ `require 'single-file-unit-test.php'` だけで動作
-- ✅ `assertSame` と `expectExceptionMessage` に対応
-- ✅ PHPUnit 互換の `TestCase` を継承した記述が可能（後からPHPUnitへ移行しやすい）
-- ✅ `php single-file-unit-test.php tests/` で CLI 実行可能
-- ✅ `--help` と `--version` オプションでヘルプとバージョン表示
-- ✅ 終了コードによる成功・失敗判定（CIに対応）
-- ✅ PHP 5.6 ～ 8.4 対応（GitHub Actions 対応済み）
+This tool was created to meet the real-world need of "**I just want to write my first test**" in such situations.
 
 ---
 
-## 🚀 使い方
+## Features
 
-### A. ライブラリとして使う
+- Works with just `require 'single-file-unit-test.php'`
+- Supports `assertSame` and `expectExceptionMessage`
+- PHPUnit-compatible `TestCase` inheritance (easy migration to PHPUnit later)
+- CLI execution with `php single-file-unit-test.php tests/`
+- `--help` and `--version` options for help and version display
+- Exit codes for success/failure determination (CI compatible)
+- PHP 5.6 to 8.4 support (GitHub Actions ready)
+
+---
+
+## Usage
+
+### A. Using as a Library
 
 ```php
 <?php
@@ -46,37 +46,37 @@ class MyTest extends TestCase {
     }
 }
 
-// 単一のテストクラスを実行
+// Run a single test class
 (new MyTest())->runTests();
 
-// 結果を表示（オプション）
+// Display results (optional)
 TestCase::showResults();
 ```
 
-### B. CLI テストランナーとして使う
+### B. Using as a CLI Test Runner
 
 ```bash
-# テスト実行
+# Run tests
 php single-file-unit-test.php tests/
 
-# ヘルプ表示
+# Show help
 php single-file-unit-test.php --help
 
-# バージョン表示
+# Show version
 php single-file-unit-test.php --version
 ```
 
-**オプション:**
-- `-h, --help`: ヘルプメッセージを表示
-- `-v, --version`: バージョン情報を表示
+**Options:**
+- `-h, --help`: Display help message
+- `-v, --version`: Display version information
 
-**動作:**
-- `tests/` ディレクトリを再帰的に探索し `*Test.php` ファイルを読み込みます
-- テストが1つでも失敗すれば `exit(1)` で終了します（CI対応）
+**Behavior:**
+- Recursively searches the `tests/` directory and loads `*Test.php` files
+- Exits with `exit(1)` if any test fails (CI compatible)
 
 ---
 
-## 🧪 サンプルテスト
+## Sample Test
 
 ```php
 <?php
@@ -104,7 +104,7 @@ class SomeTest extends TestCase {
 
 ---
 
-## 📄 ライセンス
+## License
 
 MIT License  
 Copyright (c) 2025 smeghead
