@@ -76,7 +76,7 @@ php single-file-unit-test.php --version
 
 ---
 
-## Sample Test
+## Example Test
 
 ```php
 <?php
