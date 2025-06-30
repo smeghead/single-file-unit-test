@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.0.3 (2025-07-01)
+
+ * README rewritten in English.
+ * Add Install section in README.
+
 ## v0.0.2 (2025-06-25)
 
  * fix to run as library error.
