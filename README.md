@@ -29,6 +29,19 @@ This tool was created to meet the real-world need of "**I just want to write my 
 
 ---
 
+## Install
+
+Installation is **incredibly simple** - just download the single file to your project:
+
+```bash
+curl -o single-file-unit-test.php https://raw.githubusercontent.com/smeghead/single-file-unit-test/main/single-file-unit-test.php
+```
+
+That's it! No `composer install`, no complex setup, no dependencies to manage.  
+Just one command and you're ready to start testing.
+
+---
+
 ## Usage
 
 ### A. Using as a Library
