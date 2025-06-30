@@ -51,42 +51,6 @@ class ColorSupport
         // デフォルトでは色をサポートしないと仮定
         return false;
     }
-
-    /**
-     * NO_COLOR環境変数が設定されているかチェック
-     * @return bool NO_COLOR環境変数が設定されている場合はtrue
-     */
-    public function isNoColorSet()
-    {
-        return getenv('NO_COLOR') !== false;
-    }
-
-    /**
-     * 出力先がTTYかどうかをチェック
-     * @return bool TTYの場合はtrue
-     */
-    public function isTty()
-    {
-        return function_exists('posix_isatty') && posix_isatty(STDOUT);
-    }
-
-    /**
-     * TERM環境変数の値を取得
-     * @return string|false TERM環境変数の値、設定されていない場合はfalse
-     */
-    public function getTerm()
-    {
-        return getenv('TERM');
-    }
-
-    /**
-     * COLORTERM環境変数が設定されているかチェック
-     * @return bool COLORTERM環境変数が設定されている場合はtrue
-     */
-    public function isColorTermSet()
-    {
-        return getenv('COLORTERM') !== false;
-    }
 }
 
 final class TerminalString
