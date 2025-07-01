@@ -7,51 +7,6 @@ use Smeghead\SingleFileUnitTest\ResultAccumulator;
 
 class ResultAccumulatorTest extends TestCase
 {
-    public function testInitialValues()
-    {
-        $accumulator = new ResultAccumulator();
-        
-        $this->assertSame(0, $accumulator->getTestCount(), 'Initial test count should be 0');
-        $this->assertSame(0, $accumulator->getFailCount(), 'Initial fail count should be 0');
-        $this->assertSame(0, $accumulator->getAssertionCount(), 'Initial assertion count should be 0');
-        $this->assertSame([], $accumulator->getFailedTests(), 'Initial failed tests should be empty array');
-        $this->assertSame(false, $accumulator->hasFailures(), 'Initial hasFailures should be false');
-    }
-    
-    public function testIncrementTestCount()
-    {
-        $accumulator = new ResultAccumulator();
-        
-        $accumulator->incrementTestCount();
-        $this->assertSame(1, $accumulator->getTestCount(), 'Test count should be 1 after increment');
-        
-        $accumulator->incrementTestCount();
-        $this->assertSame(2, $accumulator->getTestCount(), 'Test count should be 2 after second increment');
-    }
-    
-    public function testIncrementFailCount()
-    {
-        $accumulator = new ResultAccumulator();
-        
-        $accumulator->incrementFailCount();
-        $this->assertSame(1, $accumulator->getFailCount(), 'Fail count should be 1 after increment');
-        $this->assertSame(true, $accumulator->hasFailures(), 'hasFailures should be true after fail increment');
-        
-        $accumulator->incrementFailCount();
-        $this->assertSame(2, $accumulator->getFailCount(), 'Fail count should be 2 after second increment');
-    }
-    
-    public function testIncrementAssertionCount()
-    {
-        $accumulator = new ResultAccumulator();
-        
-        $accumulator->incrementAssertionCount();
-        $this->assertSame(1, $accumulator->getAssertionCount(), 'Assertion count should be 1 after increment');
-        
-        $accumulator->incrementAssertionCount();
-        $this->assertSame(2, $accumulator->getAssertionCount(), 'Assertion count should be 2 after second increment');
-    }
-    
     public function testAddFailedTest()
     {
         $accumulator = new ResultAccumulator();
@@ -98,10 +53,49 @@ class ResultAccumulatorTest extends TestCase
         $accumulator->incrementAssertionCount();
         
         // Verify final state
-        $this->assertSame(3, $accumulator->getTestCount(), 'Should have 3 tests');
-        $this->assertSame(4, $accumulator->getAssertionCount(), 'Should have 4 assertions');
-        $this->assertSame(1, $accumulator->getFailCount(), 'Should have 1 failure');
         $this->assertSame(['SomeTest::testFailingMethod'], $accumulator->getFailedTests(), 'Should have 1 failed test');
         $this->assertSame(true, $accumulator->hasFailures(), 'Should have failures');
+        $expected = "FAILURES!\nTests: 3 Assertions: 4 Failures: 1.";
+        $this->assertSame($expected, $accumulator->getSummaryMessage(), 'Failure message should be formatted correctly');
+    }
+
+    public function testGetSummaryMessageSuccess()
+    {
+        $accumulator = new ResultAccumulator();
+        
+        $accumulator->incrementTestCount();
+        $accumulator->incrementTestCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementAssertionCount();
+        
+        $expected = "OK (2 tests, 3 assertions)";
+        $this->assertSame($expected, $accumulator->getSummaryMessage(), 'Success message should be formatted correctly');
+    }
+
+    public function testGetSummaryMessageFailure()
+    {
+        $accumulator = new ResultAccumulator();
+        
+        $accumulator->incrementTestCount();
+        $accumulator->incrementTestCount();
+        $accumulator->incrementTestCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementAssertionCount();
+        $accumulator->incrementFailCount();
+        $accumulator->addFailedTest('SomeTest::testFailingMethod');
+        
+        $expected = "FAILURES!\nTests: 3 Assertions: 4 Failures: 1.";
+        $this->assertSame($expected, $accumulator->getSummaryMessage(), 'Failure message should be formatted correctly');
+    }
+
+    public function testGetSummaryMessageNoTestsNoFailures()
+    {
+        $accumulator = new ResultAccumulator();
+        
+        $expected = "OK (0 tests, 0 assertions)";
+        $this->assertSame($expected, $accumulator->getSummaryMessage(), 'Empty success message should be formatted correctly');
     }
 }

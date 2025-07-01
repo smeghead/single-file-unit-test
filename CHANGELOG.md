@@ -5,6 +5,7 @@
  * Remove unused public methods from ColorSupport class (isNoColorSet, isTty, getTerm, isColorTermSet).
  * Clean up corresponding test methods in ColorSupportTest.
  * Improve code maintainability by keeping only essential methods.
+ * Fixed ResultAccumulator to build summary strings.
 
 ## v0.0.3 (2025-07-01)
 

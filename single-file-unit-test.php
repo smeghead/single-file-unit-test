@@ -93,7 +93,11 @@ final class TerminalString
                 $codes[] = self::$bgColors[$bg];
             }
             if ($codes) {
-                return "\033[" . implode(';', $codes) . "m" . $text . "\033[0m";
+                $lines = [];
+                foreach (preg_split('/\r?\n/', $text) as $line) {
+                    $lines[] = "\033[" . implode(';', $codes) . "m" . $line . "\033[0m";
+                }
+                return implode("\n", $lines);
             }
         }
         return $text;
@@ -127,21 +131,6 @@ final class ResultAccumulator
         $this->failedTests[] = $testName;
     }
 
-    public function getTestCount()
-    {
-        return $this->testCount;
-    }
-
-    public function getFailCount()
-    {
-        return $this->failCount;
-    }
-
-    public function getAssertionCount()
-    {
-        return $this->assertionCount;
-    }
-
     public function getFailedTests()
     {
         return $this->failedTests;
@@ -150,6 +139,15 @@ final class ResultAccumulator
     public function hasFailures()
     {
         return $this->failCount > 0;
+    }
+
+    public function getSummaryMessage()
+    {
+        if (!$this->hasFailures()) {
+            return "OK ({$this->testCount} tests, {$this->assertionCount} assertions)";
+        } else {
+            return "FAILURES!\nTests: {$this->testCount} Assertions: {$this->assertionCount} Failures: {$this->failCount}.";
+        }
     }
 }
 
@@ -179,14 +177,11 @@ class TestCase
         $colorSupport = new ColorSupport();
         $terminalString = new TerminalString($colorSupport);
         echo "\n"; // 空行を追加
+        
         if (!self::$resultAccumulator->hasFailures()) {
-            echo $terminalString->text(
-                "OK (" . self::$resultAccumulator->getTestCount() . " tests, " . self::$resultAccumulator->getAssertionCount() . " assertions)",
-                'black', 'green'
-            ) . "\n";
+            echo $terminalString->text(self::$resultAccumulator->getSummaryMessage(), 'black', 'green') . "\n";
         } else {
-            echo $terminalString->text("FAILURES!", 'white', 'red') . "\n";
-            echo "Tests: " . self::$resultAccumulator->getTestCount() . " Assertions: " . self::$resultAccumulator->getAssertionCount() . " Failures: " . self::$resultAccumulator->getFailCount() . ".\n";
+            echo $terminalString->text(self::$resultAccumulator->getSummaryMessage(), 'white', 'red') . "\n";
             foreach (self::$resultAccumulator->getFailedTests() as $failTest) {
                 echo "  - $failTest\n";
             }
