@@ -6,6 +6,9 @@
  * Clean up corresponding test methods in ColorSupportTest.
  * Improve code maintainability by keeping only essential methods.
  * Fixed ResultAccumulator to build summary strings.
+ * Add FATAL error handling support for PHP 7+.
+ * Add PHP 5.6 compatibility with Error class polyfill.
+ * Prevent test process termination when FATAL errors occur.
 
 ## v0.0.3 (2025-07-01)
 
