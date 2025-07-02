@@ -18,7 +18,7 @@ namespace {
 
 namespace Smeghead\SingleFileUnitTest {
 
-    const VERSION = 'v0.0.3';
+    const VERSION = 'v0.1.0';
 
     class ColorSupport
     {

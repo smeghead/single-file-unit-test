@@ -1,6 +1,6 @@
 # ChangeLog
 
-## v0.0.4 (TBD)
+## v0.1.0 (2025-07-02)
 
  * Remove unused public methods from ColorSupport class (isNoColorSet, isTty, getTerm, isColorTermSet).
  * Clean up corresponding test methods in ColorSupportTest.
