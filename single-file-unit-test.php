@@ -1,4 +1,12 @@
 <?php
+/**
+ * single-file-unit-test
+ * 
+ * A zero-dependency, single-file unit testing framework for PHP 5.6 and above.
+ * Just require 'single-file-unit-test.php' and you're ready to start testing, with a design that facilitates migration to PHPUnit.
+ * 
+ * https://github.com/smeghead/single-file-unit-test
+ */
 
 // PHP5.6互換性のためのErrorクラス定義（グローバルnamespace）
 namespace {
