@@ -308,10 +308,12 @@ namespace Smeghead\SingleFileUnitTest {
                         "  php single-file-unit-test.php <test_dir_or_file> [...more]\n" .
                         "  php single-file-unit-test.php -h|--help\n" .
                         "  php single-file-unit-test.php -v|--version\n" .
+                        "  php single-file-unit-test.php --generate-test-class[=ClassName]\n" .
                         "\n" .
                         "Options:\n" .
-                        "  -h, --help     Show this help message\n" .
-                        "  -v, --version  Show version information\n" .
+                        "  -h, --help                        Show this help message\n" .
+                        "  -v, --version                     Show version information\n" .
+                        "  --generate-test-class=ClassName   Generate a test class template\n" .
                         "\n" .
                         "Arguments:\n" .
                         "  test_dir_or_file  Path to test directory or test file\n";
@@ -348,6 +350,13 @@ namespace Smeghead\SingleFileUnitTest {
             exit(0);
         }
         
+        // テストクラス生成の処理
+        $className = parseGenerateTestClassOption($args);
+        if ($className !== null) {
+            echo generateTestClass($className);
+            exit(0);
+        }
+        
         if (empty($args)) {
             showHelpTo(STDERR);
             exit(2);
@@ -360,4 +369,47 @@ namespace Smeghead\SingleFileUnitTest {
         TestCase::runAll();
     }
 
+    /**
+     * テストクラスのテンプレートを生成する
+     * @param string $className クラス名（省略時は'Example'）
+     * @return string 生成されたテストクラスのコード
+     */
+    function generateTestClass($className = 'Example') {
+        $testClassName = $className . 'Test';
+        
+        $template = '<?php
+
+use Smeghead\SingleFileUnitTest\TestCase;
+
+class ' . $testClassName . ' extends TestCase {
+    public function test_1plus2_is_3() {
+        $this->assertSame(3, (new Some())->add(1, 2));
+    }
+
+    public function test_it_must_throw_exception() {
+        $this->expectExceptionMessage("Error occurred");
+        (new Some())->error();
+    }
+}
+';
+        
+        return $template;
+    }
+
+    /**
+     * CLI引数から--generate-test-classオプションを解析する
+     * @param array $args CLI引数の配列
+     * @return string|null クラス名または null
+     */
+    function parseGenerateTestClassOption($args) {
+        foreach ($args as $arg) {
+            if ($arg === '--generate-test-class') {
+                return 'Example';
+            }
+            if (strpos($arg, '--generate-test-class=') === 0) {
+                return substr($arg, strlen('--generate-test-class='));
+            }
+        }
+        return null;
+    }
 }

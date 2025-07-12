@@ -82,10 +82,44 @@ php single-file-unit-test.php --version
 **Options:**
 - `-h, --help`: Display help message
 - `-v, --version`: Display version information
+- `--generate-test-class=ClassName`: Generate a test class template
 
 **Behavior:**
 - Recursively searches the `tests/` directory and loads `*Test.php` files
 - Exits with `exit(1)` if any test fails (CI compatible)
+
+### C. Generate Test Class Template
+
+```bash
+# Generate a test class template
+php single-file-unit-test.php --generate-test-class=Fuga
+
+# Generate ExampleTest when no class name is specified
+php single-file-unit-test.php --generate-test-class
+
+# Save to a file
+php single-file-unit-test.php --generate-test-class=Fuga > tests/FugaTest.php
+```
+
+**Generated template:**
+```php
+<?php
+
+use Smeghead\SingleFileUnitTest\TestCase;
+
+class FugaTest extends TestCase {
+    public function test_1plus2_is_3() {
+        $this->assertSame(3, (new Some())->add(1, 2));
+    }
+
+    public function test_it_must_throw_exception() {
+        $this->expectExceptionMessage("Error occurred");
+        (new Some())->error();
+    }
+}
+```
+
+This feature helps beginners get started quickly by providing a working test template that they can modify for their specific needs.
 
 ---
 
