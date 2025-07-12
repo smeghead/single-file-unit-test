@@ -1,5 +1,15 @@
 # ChangeLog
 
+## v0.1.1 (2025-07-12)
+
+ * Add `--generate-test-class` option for test template generation.
+ * Support `--generate-test-class=ClassName` to generate specific test class.
+ * Support `--generate-test-class` without value to generate ExampleTest.
+ * Add `generateTestClass()` and `parseGenerateTestClassOption()` functions.
+ * Update help text with new option documentation.
+ * Implement feature using TDD approach with comprehensive test coverage.
+ * Reduce barriers for beginners to start writing tests.
+
 ## v0.1.0 (2025-07-02)
 
  * Remove unused public methods from ColorSupport class (isNoColorSet, isTty, getTerm, isColorTermSet).
