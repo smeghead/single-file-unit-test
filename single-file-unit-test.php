@@ -377,21 +377,22 @@ namespace Smeghead\SingleFileUnitTest {
     function generateTestClass($className = 'Example') {
         $testClassName = $className . 'Test';
         
-        $template = '<?php
+        $template = <<<PHP
+<?php
 
 use Smeghead\SingleFileUnitTest\TestCase;
 
-class ' . $testClassName . ' extends TestCase {
+class $testClassName extends TestCase {
     public function test_1plus2_is_3() {
-        $this->assertSame(3, (new Some())->add(1, 2));
+        \$this->assertSame(3, (new Some())->add(1, 2));
     }
 
     public function test_it_must_throw_exception() {
-        $this->expectExceptionMessage("Error occurred");
+        \$this->expectExceptionMessage("Error occurred");
         (new Some())->error();
     }
 }
-';
+PHP;
         
         return $template;
     }
