@@ -394,7 +394,7 @@ class $testClassName extends TestCase {
 }
 PHP;
         
-        return $template;
+        return $template . "\n";
     }
 
     /**
