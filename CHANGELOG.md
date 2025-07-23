@@ -1,7 +1,8 @@
 # ChangeLog
 
-## v0.1.2 (???)
+## v0.1.2 (2025-07-23)
 
+ * Fix expectExceptionMessage does'nt work correctly.
  * Add tests for `expectExceptionMessage` to ensure its correctness.
 
 
