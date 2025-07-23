@@ -1,7 +1,7 @@
 # single-file-unit-test
 
 A **zero-dependency, single-file unit testing framework** for PHP 5.6 and above.  
-Just `require 'single-file-unit-test.php'` and you're ready to start testing, with a design that facilitates migration to PHPUnit.
+Just `require_once 'single-file-unit-test.php'` and you're ready to start testing, with a design that facilitates migration to PHPUnit.
 
 ---
 
@@ -19,7 +19,7 @@ This tool was created to meet the real-world need of "**I just want to write my 
 
 ## Features
 
-- Works with just `require 'single-file-unit-test.php'`
+- Works with just `require_once 'single-file-unit-test.php'`
 - Supports `assertSame` and `expectExceptionMessage`
 - PHPUnit-compatible `TestCase` inheritance (easy migration to PHPUnit later)
 - CLI execution with `php single-file-unit-test.php tests/`
@@ -49,7 +49,7 @@ Just one command and you're ready to start testing.
 ```php
 <?php
 
-require 'single-file-unit-test.php';
+require_once 'single-file-unit-test.php';
 
 use Smeghead\SingleFileUnitTest\TestCase;
 
