@@ -248,8 +248,9 @@ namespace Smeghead\SingleFileUnitTest {
         /**
          * 一つのテストを行ないます。
          * expectedExceptionMessage の動作についても、期待通りなら成功メッセージを返却します。
+         * @return string
          */
-        protected function runTest(string $class, string $method): string {
+        protected function runTest(string $class, string $method) {
             try {
                 ob_start();
                 $this->$method();
