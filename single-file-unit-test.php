@@ -26,7 +26,22 @@ namespace {
 
 namespace Smeghead\SingleFileUnitTest {
 
-    const VERSION = 'v0.1.1';
+    const VERSION = 'v0.1.2';
+
+    /**
+     * assert処理が失敗した場合の例外クラス
+     */
+    class AssertionFailedException extends \Exception
+    {
+    }
+
+    /**
+     * 期待した例外が発生しなかった場合の例外クラス
+     * ユーザーが期待する例外と区別するために使用
+     */
+    class ExpectationFailedException extends AssertionFailedException
+    {
+    }
 
     class ColorSupport
     {
@@ -223,10 +238,37 @@ namespace Smeghead\SingleFileUnitTest {
             self::ensureResultAccumulator();
             self::$resultAccumulator->incrementAssertionCount();
             if ($expected !== $actual) {
-                throw new \Exception(
+                throw new AssertionFailedException(
                     $message . "\nExpected: " . var_export($expected, true) .
                     "\nActual  : " . var_export($actual, true)
                 );
+            }
+        }
+
+        /**
+         * 一つのテストを行ないます。
+         * expectedExceptionMessage の動作についても、期待通りなら成功メッセージを返却します。
+         */
+        protected function runTest(string $class, string $method): string {
+            try {
+                ob_start();
+                $this->$method();
+                ob_end_clean();
+
+                if ($this->expectedExceptionMessage !== null) {
+                    throw new ExpectationFailedException("Failed asserting that exception message [{$this->expectedExceptionMessage}] was thrown.");
+                }
+                return "✔ $class::$method";
+            } catch (ExpectationFailedException $e) {
+                throw $e;
+            } catch (\Exception $e) {
+                if (
+                    $this->expectedExceptionMessage !== null &&
+                    strpos($e->getMessage(), $this->expectedExceptionMessage) !== false
+                ) {
+                    return "✔ $class::$method (expected exception caught)";
+                }
+                throw $e;
             }
         }
 
@@ -242,36 +284,18 @@ namespace Smeghead\SingleFileUnitTest {
                 $this->expectedExceptionMessage = null;
 
                 try {
-                    ob_start();
-                    $this->$method();
-                    ob_end_clean();
-
-                    if ($this->expectedExceptionMessage !== null) {
-                        throw new \Exception("Failed asserting that exception message [{$this->expectedExceptionMessage}] was thrown.");
-                    }
-
-                    $this->out("✔ $class::$method", 'green');
+                    $this->out($this->runTest($class, $method), 'green');
                 } catch (\Error $e) {
                     // PHP7以降のFATALエラーを捕捉
-                    if ($this->expectedExceptionMessage !== null &&
-                        strpos($e->getMessage(), $this->expectedExceptionMessage) !== false) {
-                        $this->out("✔ $class::$method (expected fatal error caught)", 'green');
-                    } else {
-                        self::$resultAccumulator->incrementFailCount();
-                        self::$resultAccumulator->addFailedTest("$class::$method");
-                        $this->out("✘ $class::$method", 'red');
-                        $this->out("   Fatal Error: " . $e->getMessage(), 'yellow');
-                    }
+                    self::$resultAccumulator->incrementFailCount();
+                    self::$resultAccumulator->addFailedTest("$class::$method");
+                    $this->out("✘ $class::$method", 'red');
+                    $this->out("   Fatal Error: " . $e->getMessage(), 'yellow');
                 } catch (\Exception $e) {
-                    if ($this->expectedExceptionMessage !== null &&
-                        strpos($e->getMessage(), $this->expectedExceptionMessage) !== false) {
-                        $this->out("✔ $class::$method (expected exception caught)", 'green');
-                    } else {
-                        self::$resultAccumulator->incrementFailCount();
-                        self::$resultAccumulator->addFailedTest("$class::$method");
-                        $this->out("✘ $class::$method", 'red');
-                        $this->out("   " . $e->getMessage(), 'yellow');
-                    }
+                    self::$resultAccumulator->incrementFailCount();
+                    self::$resultAccumulator->addFailedTest("$class::$method");
+                    $this->out("✘ $class::$method", 'red');
+                    $this->out("   " . $e->getMessage(), 'yellow');
                 }
             }
         }

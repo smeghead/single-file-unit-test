@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.2 (???)
+
+ * Add tests for `expectExceptionMessage` to ensure its correctness.
+
+
 ## v0.1.1 (2025-07-12)
 
  * Add `--generate-test-class` option for test template generation.
