@@ -26,7 +26,7 @@ namespace {
 
 namespace Smeghead\SingleFileUnitTest {
 
-    const VERSION = 'v0.1.2';
+    const VERSION = 'v0.1.3';
 
     // 警告表示のための設定
     ini_set('error_reporting', E_ALL);

@@ -1,6 +1,6 @@
 # ChangeLog
 
-## unreleased
+## v0.1.3 (2025-09-20)
 
  * Change Updated CLI error handling(`error_reporting`, `display_errors`, `html_errors`)
 
