@@ -28,6 +28,11 @@ namespace Smeghead\SingleFileUnitTest {
 
     const VERSION = 'v0.1.2';
 
+    // 警告表示のための設定
+    ini_set('error_reporting', E_ALL);
+    ini_set('display_errors', 'stderr');
+    ini_set('html_errors', 0);
+
     /**
      * assert処理が失敗した場合の例外クラス
      */

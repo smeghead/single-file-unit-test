@@ -1,5 +1,9 @@
 # ChangeLog
 
+## unreleased
+
+ * Change Updated CLI error handling(`error_reporting`, `display_errors`, `html_errors`)
+
 ## v0.1.2 (2025-07-23)
 
  * Fix expectExceptionMessage does'nt work correctly.
