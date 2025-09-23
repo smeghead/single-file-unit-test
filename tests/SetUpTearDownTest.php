@@ -8,12 +8,12 @@ class SetUpTearDownTest extends TestCase
 {
     private static $log = [];
 
-    public function setUp(): void
+    public function setUp()
     {
         self::$log[] = 'setUp';
     }
 
-    public function tearDown(): void
+    public function tearDown()
     {
         self::$log[] = 'tearDown';
     }

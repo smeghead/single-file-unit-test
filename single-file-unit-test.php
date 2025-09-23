@@ -198,8 +198,8 @@ namespace Smeghead\SingleFileUnitTest {
 
     class TestCase
     {
-        protected function setUp(): void {}
-        protected function tearDown(): void {}
+        protected function setUp() {}
+        protected function tearDown() {}
 
         private $expectedExceptionMessage = null;
         private static $resultAccumulator = null;
