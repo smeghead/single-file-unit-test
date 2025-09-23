@@ -262,6 +262,8 @@ namespace Smeghead\SingleFileUnitTest {
          */
         protected function runTest($class, $method) {
             try {
+                $this->setUp();
+                
                 ob_start();
                 $this->$method();
                 ob_end_clean();
@@ -280,6 +282,8 @@ namespace Smeghead\SingleFileUnitTest {
                     return "✔ $class::$method (expected exception caught)";
                 }
                 throw $e;
+            } finally {
+                $this->tearDown();
             }
         }
 
@@ -295,7 +299,6 @@ namespace Smeghead\SingleFileUnitTest {
                 $this->expectedExceptionMessage = null;
 
                 try {
-                    $this->setUp();
                     $this->out($this->runTest($class, $method), 'green');
                 } catch (\Error $e) {
                     // PHP7以降のFATALエラーを捕捉
@@ -308,8 +311,6 @@ namespace Smeghead\SingleFileUnitTest {
                     self::$resultAccumulator->addFailedTest("$class::$method");
                     $this->out("✘ $class::$method", 'red');
                     $this->out("   " . $e->getMessage(), 'yellow');
-                } finally {
-                    $this->tearDown();
                 }
             }
         }
