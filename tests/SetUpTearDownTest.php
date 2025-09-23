@@ -30,7 +30,7 @@ class SetUpTearDownTest extends TestCase
         self::$log[] = 'testTwo';
     }
 
-    public static function tearDownAfterClass(): void
+    public static function tearDownAfterClass()
     {
         // This is a special method that runs after all tests in the class.
         // We use it here to check the final state of the log.
