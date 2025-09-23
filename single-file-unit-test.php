@@ -198,6 +198,9 @@ namespace Smeghead\SingleFileUnitTest {
 
     class TestCase
     {
+        protected function setUp() {}
+        protected function tearDown() {}
+
         private $expectedExceptionMessage = null;
         private static $resultAccumulator = null;
         private $colorSupport;
@@ -259,6 +262,8 @@ namespace Smeghead\SingleFileUnitTest {
          */
         protected function runTest($class, $method) {
             try {
+                $this->setUp();
+                
                 ob_start();
                 $this->$method();
                 ob_end_clean();
@@ -277,6 +282,8 @@ namespace Smeghead\SingleFileUnitTest {
                     return "✔ $class::$method (expected exception caught)";
                 }
                 throw $e;
+            } finally {
+                $this->tearDown();
             }
         }
 
