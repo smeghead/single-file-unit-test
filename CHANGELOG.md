@@ -1,5 +1,10 @@
 # ChangeLog
 
+## Unreleased
+
+ * Add `setUp()` and `tearDown()` methods support for test preparation and cleanup.
+ * Each test method now gets fresh environment with setUp called before and tearDown called after execution.
+
 ## v0.1.3 (2025-09-20)
 
  * Change Updated CLI error handling(`error_reporting`, `display_errors`, `html_errors`)

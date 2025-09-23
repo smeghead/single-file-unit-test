@@ -21,6 +21,7 @@ This tool was created to meet the real-world need of "**I just want to write my 
 
 - Works with just `require_once 'single-file-unit-test.php'`
 - Supports `assertSame` and `expectExceptionMessage`
+- Supports `setUp` and `tearDown` methods for test preparation and cleanup
 - PHPUnit-compatible `TestCase` inheritance (easy migration to PHPUnit later)
 - CLI execution with `php single-file-unit-test.php tests/`
 - `--help` and `--version` options for help and version display
@@ -54,8 +55,24 @@ require_once 'single-file-unit-test.php';
 use Smeghead\SingleFileUnitTest\TestCase;
 
 class MyTest extends TestCase {
-    public function testSomething() {
-        $this->assertSame(2, 1 + 1);
+    private $calculator;
+
+    protected function setUp(): void {
+        // Called before each test method
+        $this->calculator = new Calculator();
+    }
+
+    protected function tearDown(): void {
+        // Called after each test method
+        $this->calculator = null;
+    }
+
+    public function testAddition() {
+        $this->assertSame(4, $this->calculator->add(2, 2));
+    }
+
+    public function testSubtraction() {
+        $this->assertSame(0, $this->calculator->subtract(2, 2));
     }
 }
 
@@ -120,6 +137,50 @@ class FugaTest extends TestCase {
 ```
 
 This feature helps beginners get started quickly by providing a working test template that they can modify for their specific needs.
+
+---
+
+## setUp and tearDown Methods
+
+The framework supports `setUp()` and `tearDown()` methods for test preparation and cleanup, just like PHPUnit:
+
+- **`setUp()`**: Called before each test method runs - use for initializing test data, creating objects, setting up database connections, etc.
+- **`tearDown()`**: Called after each test method runs - use for cleanup, closing connections, resetting state, etc.
+
+```php
+<?php
+
+use Smeghead\SingleFileUnitTest\TestCase;
+
+class DatabaseTest extends TestCase {
+    private $db;
+
+    protected function setUp(): void {
+        // Initialize fresh database connection for each test
+        $this->db = new PDO('sqlite::memory:');
+        $this->db->exec('CREATE TABLE users (id INTEGER, name TEXT)');
+    }
+
+    protected function tearDown(): void {
+        // Clean up after each test
+        $this->db = null;
+    }
+
+    public function testInsertUser() {
+        $stmt = $this->db->prepare('INSERT INTO users (id, name) VALUES (?, ?)');
+        $result = $stmt->execute([1, 'John']);
+        $this->assertSame(true, $result);
+    }
+
+    public function testUserCount() {
+        $this->db->exec("INSERT INTO users (id, name) VALUES (1, 'Alice')");
+        $count = $this->db->query('SELECT COUNT(*) FROM users')->fetchColumn();
+        $this->assertSame('1', $count);
+    }
+}
+```
+
+Each test method gets a fresh, isolated environment thanks to `setUp()` and `tearDown()`, ensuring tests don't interfere with each other.
 
 ---
 

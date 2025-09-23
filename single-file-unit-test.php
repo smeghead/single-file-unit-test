@@ -198,6 +198,9 @@ namespace Smeghead\SingleFileUnitTest {
 
     class TestCase
     {
+        protected function setUp(): void {}
+        protected function tearDown(): void {}
+
         private $expectedExceptionMessage = null;
         private static $resultAccumulator = null;
         private $colorSupport;
@@ -292,6 +295,7 @@ namespace Smeghead\SingleFileUnitTest {
                 $this->expectedExceptionMessage = null;
 
                 try {
+                    $this->setUp();
                     $this->out($this->runTest($class, $method), 'green');
                 } catch (\Error $e) {
                     // PHP7以降のFATALエラーを捕捉
@@ -304,6 +308,8 @@ namespace Smeghead\SingleFileUnitTest {
                     self::$resultAccumulator->addFailedTest("$class::$method");
                     $this->out("✘ $class::$method", 'red');
                     $this->out("   " . $e->getMessage(), 'yellow');
+                } finally {
+                    $this->tearDown();
                 }
             }
         }
