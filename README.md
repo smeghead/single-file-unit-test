@@ -1,5 +1,7 @@
 # single-file-unit-test
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/smeghead/single-file-unit-test.svg)](https://packagist.org/packages/smeghead/single-file-unit-test) [![Total Downloads](https://img.shields.io/packagist/dt/smeghead/single-file-unit-test.svg)](https://packagist.org/packages/smeghead/single-file-unit-test) [![License](https://img.shields.io/packagist/l/smeghead/single-file-unit-test.svg)](LICENSE) [![PHP Version](https://img.shields.io/packagist/php-v/smeghead/single-file-unit-test.svg)](https://packagist.org/packages/smeghead/single-file-unit-test)
+
 A **zero-dependency, single-file unit testing framework** for PHP 5.6 and above.  
 Just `require_once 'single-file-unit-test.php'` and you're ready to start testing, with a design that facilitates migration to PHPUnit.
 
