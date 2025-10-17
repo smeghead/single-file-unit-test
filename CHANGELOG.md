@@ -1,6 +1,6 @@
 # ChangeLog
 
-## Unreleased
+## v0.2.1 (2025-10-17)
 
  * add composer.json.
 
