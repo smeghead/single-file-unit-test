@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+ * add composer.json.
+
+## v0.2.0 (2025-09-23)
+
  * Add `setUp()` and `tearDown()` methods support for test preparation and cleanup.
  * Each test method now gets fresh environment with setUp called before and tearDown called after execution.
 
