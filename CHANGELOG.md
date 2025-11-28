@@ -1,5 +1,7 @@
 # ChangeLog
 
+ * add support PHP version 8.5. (add CI PHP version)
+
 ## v0.2.1 (2025-10-17)
 
  * add composer.json.
